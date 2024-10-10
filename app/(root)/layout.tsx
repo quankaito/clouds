@@ -37,7 +37,8 @@ export default function RootLayout({
               </div>
             </section>
 
-            {/* <RightSidebar /> */}
+            {/* <RightSidebar />
+            Remove */}
           </main>
 
           <Bottombar />
