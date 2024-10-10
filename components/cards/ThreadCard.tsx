@@ -48,12 +48,12 @@ function ThreadCard({
       <div className='flex items-start justify-between'>
         <div className='flex w-full flex-1 flex-row gap-4'>
           <div className='flex flex-col items-center'>
-            <Link href={`/profile/${author.id}`} className='relative h-11 w-11'>
+            <Link href={`/profile/${author.id}`} className='relative overflow-hidden rounded-full h-11 w-11'>
               <Image
                 src={author.image}
                 alt='user_community_image'
                 fill
-                className='cursor-pointer rounded-full'
+                className='cursor-pointer object-cover w-full h-full'
               />
             </Link>
 
