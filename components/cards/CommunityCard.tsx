@@ -1,92 +1,73 @@
 import Image from "next/image";
-import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
 
-import { communityTabs } from "@/constants";
+import { Button } from "../ui/button";
 
-import UserCard from "@/components/cards/UserCard";
-import ThreadsTab from "@/components/shared/ThreadsTab";
-import ProfileHeader from "@/components/shared/ProfileHeader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+interface Props {
+  id: string;
+  name: string;
+  username: string;
+  imgUrl: string;
+  bio: string;
+  members: {
+    image: string;
+  }[];
+}
 
-import { fetchCommunityDetails } from "@/lib/actions/community.actions";
-
-async function Page({ params }: { params: { id: string } }) {
-  const user = await currentUser();
-  if (!user) return null;
-
-  const communityDetails = await fetchCommunityDetails(params.id);
-
+function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
   return (
-    <section>
-      <ProfileHeader
-        accountId={communityDetails.createdBy.id}
-        authUserId={user.id}
-        name={communityDetails.name}
-        username={communityDetails.username}
-        imgUrl={communityDetails.image}
-        bio={communityDetails.bio}
-        type='Community'
-      />
+    <article className='community-card'>
+      <div className='flex flex-wrap items-center gap-3'>
+        <Link href={`/communities/${id}`} className='relative h-12 w-12'>
+          <Image
+            src={imgUrl}
+            alt='community_logo'
+            fill
+            className='rounded-full object-cover'
+          />
+        </Link>
 
-      <div className='mt-9'>
-        <Tabs defaultValue='threads' className='w-full'>
-          <TabsList className='tab'>
-            {communityTabs.map((tab) => (
-              <TabsTrigger key={tab.label} value={tab.value} className='tab'>
-                <Image
-                  src={tab.icon}
-                  alt={tab.label}
-                  width={24}
-                  height={24}
-                  className='object-contain'
-                />
-                <p className='max-sm:hidden'>{tab.label}</p>
-
-                {tab.label === "Threads" && (
-                  <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2'>
-                    {communityDetails.threads.length}
-                  </p>
-                )}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value='threads' className='w-full text-light-1'>
-            {/* @ts-ignore */}
-            <ThreadsTab
-              currentUserId={user.id}
-              accountId={communityDetails._id}
-              accountType='Community'
-            />
-          </TabsContent>
-
-          <TabsContent value='members' className='mt-9 w-full text-light-1'>
-            <section className='mt-9 flex flex-col gap-10'>
-              {communityDetails.members.map((member: any) => (
-                <UserCard
-                  key={member.id}
-                  id={member.id}
-                  name={member.name}
-                  username={member.username}
-                  imgUrl={member.image}
-                  personType='User'
-                />
-              ))}
-            </section>
-          </TabsContent>
-
-          <TabsContent value='requests' className='w-full text-light-1'>
-            {/* @ts-ignore */}
-            <ThreadsTab
-              currentUserId={user.id}
-              accountId={communityDetails._id}
-              accountType='Community'
-            />
-          </TabsContent>
-        </Tabs>
+        <div>
+          <Link href={`/communities/${id}`}>
+            <h4 className='text-base-semibold text-light-1'>{name}</h4>
+          </Link>
+          <p className='text-small-medium text-gray-1'>@{username}</p>
+        </div>
       </div>
-    </section>
+
+      <p className='mt-4 text-subtle-medium text-gray-1'>{bio}</p>
+
+      <div className='mt-5 flex flex-wrap items-center justify-between gap-3'>
+        <Link href={`/communities/${id}`}>
+          <Button size='sm' className='community-card_btn'>
+            View
+          </Button>
+        </Link>
+
+        {members.length > 0 && (
+          <div className='flex items-center'>
+            {members.map((member, index) => (
+              <Image
+                key={index}
+                src={member.image}
+                alt={`user_${index}`}
+                width={28}
+                height={28}
+                className={`${
+                  index !== 0 && "-ml-2"
+                } rounded-full object-cover`}
+              />
+            ))}
+            {members.length > 3 && (
+              <p className='ml-1 text-subtle-medium text-gray-1'>
+                {members.length}+ Users
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
   );
 }
 
-export default Page;
+export default CommunityCard;

@@ -144,12 +144,7 @@ export async function deleteThread(id: string, path: string): Promise<void> {
       { _id: { $in: Array.from(uniqueAuthorIds) } },
       { $pull: { threads: { $in: descendantThreadIds } } }
     );
-    // Update the parent thread to remove references to the deleted thread
-    if (mainThread.parentId) {
-      await Thread.findByIdAndUpdate(mainThread.parentId, {
-      $pull: { children: id },
-      });
-    }
+
     // Update Community model
     await Community.updateMany(
       { _id: { $in: Array.from(uniqueCommunityIds) } },
