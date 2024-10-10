@@ -22,10 +22,17 @@ export default function RootLayout({
     <ClerkProvider
       appearance={{
         baseTheme: dark,
+        layout: {
+          unsafe_disableDevelopmentModeWarnings: true,
+        },
       }}
     >
       <html lang='en'>
-        <body className={`${inter.className} bg-dark-1`}>{children}</body>
+        <body className={`${inter.className} bg-dark-1`}>
+          <div className="w-full flex justify-center items-center min-h-screen">
+            {children}
+          </div>
+        </body>
       </html>
     </ClerkProvider>
   );
