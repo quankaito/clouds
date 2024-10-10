@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
-// import DeleteThread from "../forms/DeleteThread";
+import DeleteThread from "../forms/DeleteThread";
 
 interface Props {
   id: string;
@@ -114,26 +114,30 @@ function ThreadCard({
           </div>
         </div>
 
-        {/* <DeleteThread
+        <DeleteThread
           threadId={JSON.stringify(id)}
           currentUserId={currentUserId}
           authorId={author.id}
           parentId={parentId}
           isComment={isComment}
-        /> */}
+        />
       </div>
 
       {!isComment && comments.length > 0 && (
         <div className='ml-1 mt-3 flex items-center gap-2'>
           {comments.slice(0, 2).map((comment, index) => (
-            <Image
+            <div
               key={index}
-              src={comment.author.image}
-              alt={`user_${index}`}
-              width={24}
-              height={24}
-              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
-            />
+              className={`overflow-hidden rounded-full w-6 h-6 ${index !== 0 && "-ml-5"}`}
+            >
+              <Image
+                src={comment.author.image}
+                alt={`user_${index}`}
+                width={24}
+                height={24}
+                className="object-cover w-full h-full"
+              />
+            </div>
           ))}
 
           <Link href={`/thread/${id}`}>
@@ -154,15 +158,18 @@ function ThreadCard({
             {community && ` - ${community.name} Community`}
           </p>
 
-          <Image
-            src={community.image}
-            alt={community.name}
-            width={14}
-            height={14}
-            className='ml-1 rounded-full object-cover'
-          />
+          <div className='ml-1 overflow-hidden rounded-full w-4 h-4'>
+            <Image
+              src={community.image}
+              alt={community.name}
+              width={14}
+              height={14}
+              className='object-cover w-full h-full'
+            />
+          </div>
         </Link>
       )}
+
     </article>
   );
 }
